@@ -29,7 +29,6 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -39,6 +38,8 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.media.MediaService;
 import com.owncloud.android.ui.activity.FileActivity;
 import com.owncloud.android.utils.MimeTypeUtil;
+
+import androidx.appcompat.app.AlertDialog;
 
 /**
  *  Activity implementing a basic video player.
@@ -93,8 +94,8 @@ public class PreviewVideoActivity extends FileActivity implements OnCompletionLi
             mAutoplay = savedInstanceState.getBoolean(EXTRA_AUTOPLAY);
             mStreamUri = (Uri) savedInstanceState.get(EXTRA_STREAM_URL);
         }
-          
-        mVideoPlayer = (VideoView) findViewById(R.id.videoPlayer);
+
+        mVideoPlayer = findViewById(R.id.videoPlayer);
 
         // set listeners to get more control on the playback
         mVideoPlayer.setOnPreparedListener(this);
