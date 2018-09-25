@@ -22,7 +22,6 @@ package com.owncloud.android.ui.preview;
 import android.accounts.Account;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,6 +56,8 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+
+import androidx.annotation.NonNull;
 
 public class    PreviewTextFragment extends FileFragment {
     private static final String EXTRA_FILE = "FILE";
