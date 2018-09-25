@@ -51,7 +51,6 @@ import com.owncloud.android.lib.resources.notifications.models.PushResponse;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.io.FileUtils;
 
-import java.lang.Exception;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
