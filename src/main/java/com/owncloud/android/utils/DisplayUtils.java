@@ -551,6 +551,7 @@ public final class DisplayUtils {
                     // we are using eTag to download a new avatar only if it changed
                     switch (status) {
                         case HttpStatus.SC_OK:
+                        case HttpStatus.SC_CREATED:
                             // new avatar
                             inputStream = get.getResponseBodyAsStream();
 
