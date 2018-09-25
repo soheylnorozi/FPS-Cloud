@@ -41,7 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.owncloud.android.R;
 import com.owncloud.android.authentication.AccountUtils;
@@ -392,11 +392,10 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     client = AccountUtils.getClientForCurrentAccount(mContext);
                 }
 
-                SimpleTarget thumbnailTarget = new SimpleTarget<Drawable>() {
+                CustomViewTarget thumbnailTarget = new CustomViewTarget<ImageView, Drawable>(thumbnailView) {
                     @Override
-                    public void onResourceReady(@NonNull Drawable resource,
-                                                @Nullable Transition<? super Drawable> transition) {
-                        thumbnailView.setImageDrawable(resource);
+                    protected void onResourceCleared(@Nullable Drawable placeholder) {
+                        thumbnailView.setImageDrawable(placeholder);
                     }
 
                     @Override
@@ -405,6 +404,13 @@ public class OCFileListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         thumbnailView.setImageResource(placeholder);
                         gridImageViewHolder.playIcon.setVisibility(View.GONE);
                     }
+
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource,
+                                                @Nullable Transition<? super Drawable> transition) {
+                        thumbnailView.setImageDrawable(resource);
+                    }
+
                 };
 
                 DisplayUtils.downloadThumbnail(file, thumbnailTarget, client, mContext);

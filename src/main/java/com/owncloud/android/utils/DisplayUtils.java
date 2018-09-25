@@ -61,6 +61,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
@@ -708,12 +709,13 @@ public final class DisplayUtils {
                     .placeholder(placeholder)
                     .error(placeholder)
                     .into((ImageView) view);
+        } else {
+            GlideApp.with(context)
+                    .load(container)
+                    .placeholder(placeholder)
+                    .error(placeholder)
+                    .into((CustomViewTarget<ImageView, Drawable>) view);
         }
-        GlideApp.with(context)
-                .load(container)
-                .placeholder(placeholder)
-                .error(placeholder)
-                .into((SimpleTarget<Drawable>) view);
     }
 
     public static void downloadActivityThumbnail(OCFile file, ImageView view, OwnCloudClient client, Context context) {
