@@ -29,16 +29,7 @@ import android.accounts.AuthenticatorException;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.SyncRequest;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
@@ -59,14 +50,9 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewTreeObserver;
+import android.view.*;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import com.owncloud.android.MainApp;
 import com.owncloud.android.R;
 import com.owncloud.android.datamodel.ArbitraryDataProvider;
@@ -90,20 +76,7 @@ import com.owncloud.android.lib.resources.status.OCCapability;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 import com.owncloud.android.media.MediaService;
 import com.owncloud.android.media.MediaServiceBinder;
-import com.owncloud.android.operations.CopyFileOperation;
-import com.owncloud.android.operations.CreateFolderOperation;
-import com.owncloud.android.operations.CreateShareViaLinkOperation;
-import com.owncloud.android.operations.CreateShareWithShareeOperation;
-import com.owncloud.android.operations.MoveFileOperation;
-import com.owncloud.android.operations.RefreshFolderOperation;
-import com.owncloud.android.operations.RemoveFileOperation;
-import com.owncloud.android.operations.RenameFileOperation;
-import com.owncloud.android.operations.RestoreFileVersionOperation;
-import com.owncloud.android.operations.SynchronizeFileOperation;
-import com.owncloud.android.operations.UnshareOperation;
-import com.owncloud.android.operations.UpdateSharePermissionsOperation;
-import com.owncloud.android.operations.UpdateShareViaLinkOperation;
-import com.owncloud.android.operations.UploadFileOperation;
+import com.owncloud.android.operations.*;
 import com.owncloud.android.providers.UsersAndGroupsSearchProvider;
 import com.owncloud.android.syncadapter.FileSyncAdapter;
 import com.owncloud.android.ui.dialog.SendShareDialog;
@@ -111,29 +84,12 @@ import com.owncloud.android.ui.dialog.ShareLinkToDialog;
 import com.owncloud.android.ui.dialog.SortingOrderDialogFragment;
 import com.owncloud.android.ui.events.SyncEventFinished;
 import com.owncloud.android.ui.events.TokenPushEvent;
-import com.owncloud.android.ui.fragment.ExtendedListFragment;
-import com.owncloud.android.ui.fragment.FileDetailFragment;
-import com.owncloud.android.ui.fragment.FileFragment;
-import com.owncloud.android.ui.fragment.OCFileListFragment;
-import com.owncloud.android.ui.fragment.TaskRetainerFragment;
+import com.owncloud.android.ui.fragment.*;
 import com.owncloud.android.ui.fragment.contactsbackup.ContactListFragment;
 import com.owncloud.android.ui.helpers.FileOperationsHelper;
 import com.owncloud.android.ui.helpers.UriUploader;
-import com.owncloud.android.ui.preview.PreviewImageActivity;
-import com.owncloud.android.ui.preview.PreviewImageFragment;
-import com.owncloud.android.ui.preview.PreviewMediaFragment;
-import com.owncloud.android.ui.preview.PreviewTextFragment;
-import com.owncloud.android.ui.preview.PreviewVideoActivity;
-import com.owncloud.android.utils.ClipboardUtil;
-import com.owncloud.android.utils.DataHolderUtil;
-import com.owncloud.android.utils.DisplayUtils;
-import com.owncloud.android.utils.ErrorMessageAdapter;
-import com.owncloud.android.utils.FileSortOrder;
-import com.owncloud.android.utils.MimeTypeUtil;
-import com.owncloud.android.utils.PermissionUtil;
-import com.owncloud.android.utils.PushUtils;
-import com.owncloud.android.utils.ThemeUtils;
-
+import com.owncloud.android.ui.preview.*;
+import com.owncloud.android.utils.*;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -182,6 +138,7 @@ public class FileDisplayActivity extends HookActivity
     public static final int REQUEST_CODE__SELECT_FILES_FROM_FILE_SYSTEM = REQUEST_CODE__LAST_SHARED + 2;
     public static final int REQUEST_CODE__MOVE_FILES = REQUEST_CODE__LAST_SHARED + 3;
     public static final int REQUEST_CODE__COPY_FILES = REQUEST_CODE__LAST_SHARED + 4;
+    public static final int REQUEST_CODE__DIRECT_CAMERA_UPLOAD = REQUEST_CODE__LAST_SHARED + 5;
 
     protected static final long DELAY_TO_REQUEST_REFRESH_OPERATION_LATER = DELAY_TO_REQUEST_OPERATIONS_LATER + 350;
 
@@ -970,6 +927,9 @@ public class FileDisplayActivity extends HookActivity
 
             requestUploadOfFilesFromFileSystem(data, resultCode);
 
+        } else if (requestCode == REQUEST_CODE__DIRECT_CAMERA_UPLOAD &&
+                (resultCode == RESULT_OK || resultCode == UploadFilesActivity.RESULT_OK_AND_MOVE)) {
+            requestUploadOfFilesFromFileSystem(data, resultCode);
         } else if (requestCode == REQUEST_CODE__MOVE_FILES && resultCode == RESULT_OK) {
             exitSelectionMode();
             final Intent fData = data;
@@ -995,11 +955,9 @@ public class FileDisplayActivity extends HookActivity
                     },
                     DELAY_TO_REQUEST_OPERATIONS_LATER
             );
-
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 
     private void exitSelectionMode() {
